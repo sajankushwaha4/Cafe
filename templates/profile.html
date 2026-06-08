@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container profile-container">
+    <!-- Profile Welcome Header -->
+    <div class="profile-header">
+        <div class="profile-title">
+            <h2>Hello, {{ username }}!</h2>
+            <p><i class="fa-solid fa-envelope"></i> Connected Gmail: <b>{{ user_email }}</b></p>
+            <p><i class="fa-solid fa-user-shield"></i> Role: <span class="badge" style="background-color: var(--accent-light); color: var(--primary); text-transform: uppercase;">{{ user_role }}</span></p>
+        </div>
+        <div>
+            <a href="{{ url_for('menu') }}" class="btn btn-accent"><i class="fa-solid fa-mug-hot"></i> Order Coffee</a>
+        </div>
+    </div>
+
+    <!-- History Columns -->
+    <div class="profile-sections">
+        <!-- Table Reservations History Card -->
+        <div class="profile-card">
+            <h3><i class="fa-solid fa-chair" style="color: var(--accent);"></i> Booked Tables</h3>
+            <div class="history-list">
+                {% if reservations %}
+                    {% for res in reservations %}
+                        <div class="history-item">
+                            <div class="history-item-header">
+                                <span>Booking ID: KC-RES-{{ res.id }}</span>
+                                <span style="color: var(--accent);"><i class="fa-solid fa-check-double"></i> Confirmed</span>
+                            </div>
+                            <div style="margin: 0.5rem 0; color: var(--dark);">
+                                <p><i class="fa-solid fa-calendar-day"></i> Date: <b>{{ res.date }}</b></p>
+                                <p><i class="fa-solid fa-clock"></i> Duration: <b>{{ res.slot_in }}</b> to <b>{{ res.slot_out }}</b></p>
+                                <p><i class="fa-solid fa-users"></i> Guests: <b>{{ res.guests }} Persons</b></p>
+                                <p><i class="fa-solid fa-circle-info"></i> Status: 
+                                    <span class="badge {% if res.status == 'Active' %}paid{% else %}pending{% endif %}">
+                                        {{ res.status }}
+                                    </span>
+                                </p>
+                            </div>
+                            {% if res.special_requests %}
+                                <div style="font-size: 0.8rem; background-color: var(--light); padding: 0.4rem; border-radius: 4px; border: 1px dashed var(--cream-dark); margin-top: 0.5rem;">
+                                    <b>Note:</b> {{ res.special_requests }}
+                                </div>
+                            {% endif %}
+                            <small style="color: var(--gray); display: block; margin-top: 0.5rem; text-align: right;">Booked on: {{ res.created_at.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align: center; color: var(--gray); padding: 3rem 0;">
+                        <span style="font-size: 3rem; display: block;">🪑</span>
+                        No active table reservations.
+                        <a href="{{ url_for('reserve') }}" class="btn btn-sm btn-secondary" style="display: block; margin: 1rem auto; max-width: 200px;">Book a Table</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Food Orders History Card -->
+        <div class="profile-card">
+            <h3><i class="fa-solid fa-receipt" style="color: var(--accent);"></i> Order History</h3>
+            <div class="history-list">
+                {% if orders_data %}
+                    {% for data in orders_data %}
+                        <div class="history-item {% if data.order.payment_status == 'Paid' %}paid{% else %}pending{% endif %}">
+                            <div class="history-item-header">
+                                <span>Order ID: KC-ORD-{{ data.order.id }}</span>
+                                <span class="badge {% if data.order.payment_status == 'Paid' %}paid{% else %}pending{% endif %}">
+                                    {{ data.order.payment_status }}
+                                </span>
+                            </div>
+                            <div style="margin: 0.5rem 0;">
+                                <p style="font-weight: 600;">Total Amount: INR {{ "%.2f"|format(data.order.total_amount) }}</p>
+                                <p style="font-size: 0.85rem; color: var(--gray);">Order Status: <span class="badge" style="background-color: var(--cream-dark); color: var(--primary);">{{ data.order.order_status }}</span></p>
+                                
+                                <div style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-muted);">
+                                    <b>Ordered Items:</b>
+                                    <ul style="padding-left: 1.2rem; margin-top: 0.2rem;">
+                                        {% for item in data.items_list %}
+                                            <li>{{ item.name }} x {{ item.quantity }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; border-top: 1px dashed var(--cream-dark); padding-top: 0.5rem;">
+                                <small style="color: var(--gray);">Date: {{ data.order.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                <div>
+                                    {% if data.order.payment_status == 'Pending' %}
+                                        <a href="{{ url_for('checkout', order_id=data.order.id) }}" class="btn btn-accent btn-sm" style="padding: 0.2rem 0.6rem; font-size: 0.8rem;"><i class="fa-solid fa-qrcode"></i> Pay Now</a>
+                                    {% else %}
+                                        <a href="{{ url_for('bill', order_id=data.order.id) }}" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.6rem; font-size: 0.8rem;"><i class="fa-solid fa-print"></i> View Bill</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align: center; color: var(--gray); padding: 3rem 0;">
+                        <span style="font-size: 3rem; display: block;">🍔</span>
+                        No orders placed yet.
+                        <a href="{{ url_for('menu') }}" class="btn btn-sm btn-secondary" style="display: block; margin: 1rem auto; max-width: 200px;">Browse Menu</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

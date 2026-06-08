@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="reserve-container">
+        <h2><i class="fa-solid fa-chair" style="color: var(--accent);"></i> Book a Table</h2>
+        <p class="text-center" style="color: var(--gray); margin-top: -1.5rem; margin-bottom: 2.5rem;">Secure your spot at Kushwaha Cafe. We will email your confirmation code to you instantly.</p>
+        
+        <form action="{{ url_for('reserve') }}" method="POST">
+            <div class="form-grid">
+                <!-- Name Field -->
+                <div class="form-group">
+                    <label for="res-name"><i class="fa-solid fa-user"></i> Full Name</label>
+                    <input type="text" id="res-name" name="name" value="{{ username or '' }}" placeholder="Enter booking name" required>
+                </div>
+                
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="res-email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+                    <input type="email" id="res-email" name="email" value="{{ user_email or '' }}" placeholder="Enter email address" required>
+                    <small style="color: var(--gray); font-size: 0.75rem;">Your booking receipt will be sent here.</small>
+                </div>
+                
+                <!-- Phone Field -->
+                <div class="form-group">
+                    <label for="res-phone"><i class="fa-solid fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="res-phone" name="phone" placeholder="Enter contact phone" required>
+                </div>
+                
+                <!-- Guest Count Field -->
+                <div class="form-group">
+                    <label for="res-guests"><i class="fa-solid fa-users"></i> Number of Guests</label>
+                    <select id="res-guests" name="guests" required>
+                        <option value="" disabled selected>Select number of guests</option>
+                        <option value="1">1 Person</option>
+                        <option value="2">2 Persons</option>
+                        <option value="3">3 Persons</option>
+                        <option value="4">4 Persons</option>
+                        <option value="5">5 Persons</option>
+                        <option value="6">6 Persons</option>
+                        <option value="8">8 Persons</option>
+                        <option value="10">10+ Persons (Party)</option>
+                    </select>
+                </div>
+                
+                <!-- Date Field -->
+                <div class="form-group">
+                    <label for="res-date"><i class="fa-solid fa-calendar"></i> Date</label>
+                    <input type="date" id="res-date" name="date" required>
+                </div>
+                
+                <!-- Slot In Time Field -->
+                <div class="form-group">
+                    <label for="res-slot-in"><i class="fa-solid fa-clock"></i> Slot In Time</label>
+                    <input type="time" id="res-slot-in" name="slot_in" required>
+                </div>
+                
+                <!-- Slot Out Time Field -->
+                <div class="form-group">
+                    <label for="res-slot-out"><i class="fa-solid fa-clock-outline"></i> Slot Out Time</label>
+                    <input type="time" id="res-slot-out" name="slot_out" required>
+                </div>
+                
+                <!-- Special Requests Field -->
+                <div class="form-group full-width">
+                    <label for="res-requests"><i class="fa-solid fa-pen-nib"></i> Special Requests (Optional)</label>
+                    <textarea id="res-requests" name="special_requests" rows="4" placeholder="Let us know if you need high chairs, have food allergies, or are celebrating a special occasion..."></textarea>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 2rem;">
+                <button type="submit" class="btn btn-accent" style="padding: 1rem 3rem;"><i class="fa-solid fa-circle-check"></i> Confirm Reservation</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set minimum date picker values to today
+        const dateInput = document.getElementById('res-date');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+            dateInput.value = today;
+        }
+        
+        // Dynamic time validation
+        const slotIn = document.getElementById('res-slot-in');
+        const slotOut = document.getElementById('res-slot-out');
+        const form = document.querySelector('form');
+        
+        function validateTimes() {
+            if (slotIn.value && slotOut.value) {
+                if (slotIn.value >= slotOut.value) {
+                    slotOut.setCustomValidity("Slot Out time must be after Slot In time.");
+                } else {
+                    slotOut.setCustomValidity("");
+                }
+            }
+        }
+        
+        slotIn.addEventListener('change', validateTimes);
+        slotOut.addEventListener('change', validateTimes);
+        form.addEventListener('submit', (e) => {
+            validateTimes();
+            if (!form.checkValidity()) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

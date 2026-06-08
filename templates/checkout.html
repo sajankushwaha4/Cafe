@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="checkout-container">
+        <h2><i class="fa-solid fa-qrcode" style="color: var(--accent);"></i> UPI QR Payment</h2>
+        <p style="color: var(--gray); margin-bottom: 2rem;">Scan the QR code below using any UPI App (Google Pay, PhonePe, Paytm, BHIM) to complete your transaction.</p>
+        
+        <!-- Order details -->
+        <div style="background-color: var(--cream); padding: 1rem; border-radius: 8px; border: 1px solid var(--cream-dark); margin-bottom: 1.5rem; text-align: left;">
+            <p><b>Order Reference:</b> KC-ORD-{{ order.id }}</p>
+            <p><b>Customer:</b> {{ order.customer_name }} ({{ order.customer_phone }})</p>
+        </div>
+        <!-- Dynamic QR Card -->
+        <div class="qr-card" style="max-width: 320px; margin: 0 auto 2rem auto;">
+            <div style="font-weight: 600; text-transform: uppercase; color: var(--primary); font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 1rem;">Scan to Pay Owner</div>
+            
+            <!-- QR code image encoding standard UPI deep link -->
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ upi_string }}" class="qr-code-img" alt="UPI QR Code" style="margin-bottom: 0.5rem;">
+            
+            <div class="upi-id" style="font-size: 0.9rem; font-weight: 700; color: var(--primary);">UPI: {{ payee_upi }}</div>
+            <div class="checkout-amount" style="font-size: 2.2rem; margin: 0.5rem 0;">INR {{ "%.2f"|format(order.total_amount) }}</div>
+        </div>
+        
+        <!-- UTR input form group -->
+        <div class="form-group" style="max-width: 350px; margin: 0 auto 1.5rem auto; text-align: left;">
+            <label for="payment-utr" style="font-weight: 600;"><i class="fa-solid fa-key"></i> Enter 12-Digit UPI Ref / UTR No.</label>
+            <input type="text" id="payment-utr" placeholder="e.g. 123456789012" maxlength="12" required style="text-align: center; font-size: 1.1rem; letter-spacing: 2px;">
+            <small style="color: var(--gray); display: block; margin-top: 0.3rem;">You can find this transaction reference code in your UPI payment details.</small>
+        </div>
+        
+        <!-- Simulation Note and Button -->
+        <div class="simulation-note" style="text-align: left; max-width: 450px; margin: 0 auto 1.5rem auto;">
+            <i class="fa-solid fa-circle-info"></i> <b>Scan & Pay:</b> Scan the QR code using Google Pay, PhonePe, or Paytm to pay directly to <b>7408433563@upi</b>. Once paid, copy the 12-digit UTR number and paste it above to verify and print your bill.
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <button id="confirm-payment-btn" data-order-id="{{ order.id }}" class="btn btn-accent" style="padding: 1rem 3rem; font-size: 1.1rem; width: 100%; max-width: 350px;">
+                <i class="fa-solid fa-circle-check"></i> Verify & Confirm Payment
+            </button>
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('menu') }}" style="color: var(--gray); font-size: 0.9rem; text-decoration: underline;"><i class="fa-solid fa-arrow-left-long"></i> Cancel & Return to Menu</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

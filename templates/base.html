@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kushwaha Cafe - Premium Coffee & Cozy Space</title>
+    <!-- Favicon (Coffee emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
+    <!-- FontAwesome Icons for visual enhancements -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Premium Header / Navbar -->
+    <header>
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fa-solid fa-mug-hot"></i> Kushwaha<span>Cafe</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+                <li><a href="{{ url_for('menu') }}" class="{% if request.path == '/menu' %}active{% endif %}">Menu</a></li>
+                <li><a href="{{ url_for('reserve') }}" class="{% if request.path == '/reserve' %}active{% endif %}">Book Table</a></li>
+                
+                {% if logged_in %}
+                    <li><a href="{{ url_for('profile') }}" class="{% if request.path == '/profile' %}active{% endif %}"><i class="fa-solid fa-user-circle"></i> Profile</a></li>
+                    {% if user_role == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}" class="btn btn-accent btn-sm" style="padding: 0.4rem 1rem;"><i class="fa-solid fa-gauge"></i> Admin Panel</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm" style="padding: 0.4rem 1rem; border-color: #E2E8F0; color: #E2E8F0;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" class="btn btn-accent"><i class="fa-solid fa-sign-in-alt"></i> Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </header>
+
+    <!-- Flash Messages Container -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <span>
+                            {% if category == 'success' %}
+                                <i class="fa-solid fa-circle-check"></i>
+                            {% elif category == 'error' %}
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-info"></i>
+                            {% endif %}
+                            {{ message }}
+                        </span>
+                        <button class="flash-close">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Premium Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3><i class="fa-solid fa-mug-hot"></i> Kushwaha Cafe</h3>
+                    <p>Experience artisanal coffee brewed with passion, serving delicious gourmet snacks, and providing a cozy, premium workspace for developers, writers, and dreamers.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('menu') }}">Our Menu</a></li>
+                        <li><a href="{{ url_for('reserve') }}">Book a Table</a></li>
+                        {% if not logged_in %}
+                            <li><a href="{{ url_for('login') }}">Sign In / Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Opening Hours</h3>
+                    <p><b>Monday - Friday:</b> 8:00 AM - 10:00 PM</p>
+                    <p><b>Saturday - Sunday:</b> 9:00 AM - 11:00 PM</p>
+                    <p style="color: var(--accent); margin-top: 10px;"><b>Happy Hours:</b> Daily 4 PM - 6 PM (15% OFF)</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    {% if cafe_locations %}
+                        {% for loc in cafe_locations %}
+                            <div style="margin-bottom: 1.2rem;">
+                                <p style="font-weight: 600; margin-bottom: 3px; color: var(--accent);">{{ loc.name }}</p>
+                                <p style="margin-bottom: 3px; font-size: 0.85rem; line-height: 1.4;">
+                                    <i class="fa-solid fa-location-dot" style="color: var(--accent);"></i> 
+                                    <a href="{{ loc.map_url }}" target="_blank" style="color: inherit; text-decoration: underline;">{{ loc.address }}</a>
+                                </p>
+                                {% if loc.phone %}
+                                    <p style="margin-bottom: 0; font-size: 0.85rem;"><i class="fa-solid fa-phone" style="color: var(--accent);"></i> {{ loc.phone }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p><i class="fa-solid fa-location-dot" style="color: var(--accent);"></i> Sector-62, Noida, Uttar Pradesh, India</p>
+                        <p><i class="fa-solid fa-phone" style="color: var(--accent);"></i> +91 98765 43210</p>
+                        <p><i class="fa-solid fa-envelope" style="color: var(--accent);"></i> contact@kushwahacafe.com</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Kushwaha Cafe. All Rights Reserved. Made with ❤️ using Flask & HTML/CSS/JS</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Client-Side JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

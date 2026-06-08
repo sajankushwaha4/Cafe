@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <!-- Auth Sidebar info banner -->
+        <div class="auth-sidebar">
+            <h2>Taste & Coziness</h2>
+            <p>Join the Kushwaha Cafe community today. Log in to your account to place quick food orders, book tables in advance, and track your invoice bills online.</p>
+            <div style="font-size: 5rem; margin-top: 2rem; opacity: 0.9;">☕🥐🍰</div>
+        </div>
+        
+        <!-- Interactive Auth Forms -->
+        <div class="auth-forms">
+            <div class="auth-toggle">
+                <div class="auth-tab active" data-target="login">Login</div>
+                <div class="auth-tab" data-target="register">Register</div>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active" action="{{ url_for('login') }}" methods="POST" method="POST">
+                <input type="hidden" name="action" value="login">
+                
+                <div class="form-group">
+                    <label for="login-username"><i class="fa-solid fa-user"></i> Username or Email</label>
+                    <input type="text" id="login-username" name="username_or_email" placeholder="Enter username or email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password"><i class="fa-solid fa-lock"></i> Password</label>
+                    <input type="password" id="login-password" name="password" placeholder="Enter password" required>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
+            </form>
+            
+            <!-- Registration Form -->
+            <form id="register-form" class="auth-form" action="{{ url_for('login') }}" methods="POST" method="POST">
+                <input type="hidden" name="action" value="register">
+                
+                <div class="form-group">
+                    <label for="reg-username"><i class="fa-solid fa-user-plus"></i> Username</label>
+                    <input type="text" id="reg-username" name="username" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-email"><i class="fa-solid fa-envelope"></i> Email (Gmail Address)</label>
+                    <input type="email" id="reg-email" name="email" placeholder="example@gmail.com" required>
+                    <small style="color: var(--gray); font-size: 0.75rem; display: block; margin-top: 0.3rem;">Required for sending table bookings and order bills.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-password"><i class="fa-solid fa-lock"></i> Password</label>
+                    <input type="password" id="reg-password" name="password" placeholder="Create a password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 1rem;"><i class="fa-solid fa-user-check"></i> Register Account</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

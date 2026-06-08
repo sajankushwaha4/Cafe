@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Warm Coffee. Cozy Space.</h1>
+        <p>Welcome to Kushwaha Cafe - where every cup tells a story. Taste the finest single-origin coffee beans,
+            freshly baked pastries, and experience a relaxing atmosphere perfect for you.</p>
+        <div class="hero-btns">
+            <a href="{{ url_for('menu') }}" class="btn btn-accent"><i class="fa-solid fa-mug-hot"></i> Order Online</a>
+            <a href="{{ url_for('reserve') }}" class="btn btn-secondary" style="border-color: white; color: white;"><i
+                    class="fa-solid fa-calendar-days"></i> Book Table</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Visit Kushwaha Cafe?</h2>
+            <p style="color: var(--gray);">We craft experiences, not just beverages.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">☕</span>
+                <h3>Artisanal Brews</h3>
+                <p>Our beans are ethically sourced, locally roasted, and brewed by professional baristas to give you the
+                    perfect extraction every single time.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🥪</span>
+                <h3>Gourmet Snacks</h3>
+                <p>Freshly baked muffins, savory grilled sandwiches, and premium cheesecakes made daily with
+                    high-quality, fresh ingredients.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">💻</span>
+                <h3>Cozy Workspace</h3>
+                <p>Equipped with high-speed Wi-Fi, silent corners, and comfortable seating, our cafe is the ultimate
+                    spot to work, read, or study.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3>Smart QR Payments</h3>
+                <p>Order from your phone, scan our dynamic UPI QR code, complete payments instantly, and print your
+                    digital invoice/bill receipt.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section
+    style="background-color: var(--light); padding: 5rem 0; border-top: 1px solid var(--cream-dark); border-bottom: 1px solid var(--cream-dark);">
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+        <div>
+            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop"
+                alt="Cafe Interior"
+                style="width: 100%; border-radius: var(--border-radius); box-shadow: var(--shadow-md); object-fit: cover; height: 350px;">
+        </div>
+        <div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Crafted with Love, Poured with Pride</h2>
+            <p style="margin-bottom: 1rem; color: var(--gray);">Kushwaha Cafe was founded with a simple vision: to
+                create a community hub where people can connect over excellent coffee and delicious food. We carefully
+                curate our menu to ensure we offer something for every palate.</p>
+            <p style="margin-bottom: 2rem; color: var(--gray);">Whether you are stopping by for your morning espresso,
+                hosting a business discussion, or celebrating a quiet weekend with desserts, we provide a warm space and
+                premium hospitality.</p>
+            <a href="{{ url_for('reserve') }}" class="btn">Reserve a Table Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Our Branches Section -->
+<section class="features" style="background-color: var(--cream-dark); border-top: 1px solid rgba(42, 26, 16, 0.08); border-bottom: 1px solid rgba(42, 26, 16, 0.08); padding: 5rem 0;">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Cafe Branches</h2>
+            <p style="color: var(--gray);">Find us at our convenient locations across the city and get instant navigation directions.</p>
+        </div>
+
+        <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem;">
+            {% if cafe_locations %}
+                {% for loc in cafe_locations %}
+                    <div class="feature-card" style="text-align: left; padding: 2.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="feature-icon" style="font-size: 2.5rem; margin-bottom: 1rem; display: inline-block;">📍</span>
+                            <h3 style="margin-bottom: 0.8rem; font-size: 1.5rem;">{{ loc.name }}</h3>
+                            <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 1rem; min-height: 48px; line-height: 1.5;">{{ loc.address }}</p>
+                            {% if loc.phone %}
+                                <p style="font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--primary);"><i class="fa-solid fa-phone" style="color: var(--accent); margin-right: 5px;"></i> {{ loc.phone }}</p>
+                            {% endif %}
+                        </div>
+                        <a href="{{ loc.map_url }}" target="_blank" class="btn btn-accent" style="width: 100%; text-align: center;"><i class="fa-solid fa-map-location-dot"></i> Get Directions</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="feature-card" style="text-align: left; padding: 2.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <span class="feature-icon" style="font-size: 2.5rem; margin-bottom: 1rem; display: inline-block;">📍</span>
+                        <h3 style="margin-bottom: 0.8rem; font-size: 1.5rem;">Kushwaha Cafe - Sector 62 Branch</h3>
+                        <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 1rem; min-height: 48px; line-height: 1.5;">Sector-62, Noida, Uttar Pradesh, India</p>
+                        <p style="font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--primary);"><i class="fa-solid fa-phone" style="color: var(--accent); margin-right: 5px;"></i> +91 98765 43210</p>
+                    </div>
+                    <a href="https://maps.google.com" target="_blank" class="btn btn-accent" style="width: 100%; text-align: center;"><i class="fa-solid fa-map-location-dot"></i> Get Directions</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Customer Testimonial Slider Mock -->
+<section class="features" style="background-color: var(--cream);">
+    <div class="container">
+        <div class="section-title">
+            <h2>What Our Customers Say</h2>
+        </div>
+
+        <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div class="feature-card" style="padding: 2rem; text-align: left;">
+                <p style="font-style: italic; margin-bottom: 1.5rem; color: var(--dark);">"The hazelnut frappe is
+                    absolutely brilliant, and the paneer sandwich was fresh and perfectly grilled. The online order flow
+                    with the UPI QR was super convenient, and I printed my bill directly."</p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 2.5rem;">👦</span>
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.1rem;">Deepak Singh</h4>
+                        <small style="color: var(--gray);">Software Engineer</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card" style="padding: 2rem; text-align: left;">
+                <p style="font-style: italic; margin-bottom: 1.5rem; color: var(--dark);">"I booked a table for an
+                    afternoon business discussion. The reservation was confirmed instantly, and I received an email on
+                    my Gmail with the reservation ID. Highly recommended workspace!"</p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 2.5rem;">👧</span>
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.1rem;">Sajan Kushwaha</h4>
+                        <small style="color: var(--gray);">Creative Designer</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

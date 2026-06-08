@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="bill-container">
+        
+        <!-- Paid Watermark Stamp -->
+        <div style="position: absolute; top: 40px; right: 40px; border: 4px double var(--success); color: var(--success); font-weight: 800; font-size: 1.5rem; padding: 0.5rem 1rem; border-radius: 6px; transform: rotate(15deg); text-transform: uppercase; letter-spacing: 2px;">
+            <i class="fa-solid fa-stamp"></i> PAID
+        </div>
+        
+        <!-- Bill Invoice Header -->
+        <div class="bill-header">
+            <h1>Kushwaha Cafe</h1>
+            <p>Sector-62, Noida, Uttar Pradesh, India</p>
+            <p>Phone: +91 98765 43210 | Web: www.kushwahacafe.com</p>
+            <h3 style="margin-top: 1.5rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); font-size: 1.2rem;">Tax Invoice</h3>
+        </div>
+        
+        <!-- Bill Metadata -->
+        <div class="bill-meta">
+            <div>
+                <p><b>Bill To:</b></p>
+                <p>Name: <b>{{ order.customer_name }}</b></p>
+                <p>Phone: {{ order.customer_phone }}</p>
+            </div>
+            <div style="text-align: right;">
+                <p><b>Invoice No:</b> KC-INV-{{ order.id }}</p>
+                <p><b>Date:</b> {{ order.created_at.strftime('%d-%b-%Y %H:%M') }}</p>
+                <p><b>Txn ID:</b> <code style="font-family: monospace; background-color: var(--cream-dark); padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: bold;">{{ order.transaction_id }}</code></p>
+            </div>
+        </div>
+        
+        <!-- Invoice Items Table -->
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Item Description</th>
+                    <th style="text-align: center; width: 80px;">Qty</th>
+                    <th style="text-align: right; width: 120px;">Unit Price</th>
+                    <th style="text-align: right; width: 120px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td style="text-align: center;">{{ item.quantity }}</td>
+                        <td style="text-align: right;">INR {{ "%.2f"|format(item.price) }}</td>
+                        <td style="text-align: right;">INR {{ "%.2f"|format(item.total) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Billing Summary Totals -->
+        <div class="bill-summary">
+            <div class="bill-summary-row">
+                <span>Subtotal</span>
+                <span>INR {{ "%.2f"|format(subtotal) }}</span>
+            </div>
+            <div class="bill-summary-row">
+                <span>GST (5%)</span>
+                <span>INR {{ "%.2f"|format(gst) }}</span>
+            </div>
+            <div class="bill-summary-row grand">
+                <span>Grand Total</span>
+                <span>INR {{ "%.2f"|format(order.total_amount) }}</span>
+            </div>
+        </div>
+        
+        <!-- Bill Invoice Footer -->
+        <div class="bill-footer">
+            <p>Thank you for dining with us!</p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--gray);">This is a computer-generated tax receipt confirming successful transaction ref: {{ order.transaction_id }}.</p>
+        </div>
+        
+        <!-- Action Buttons (Hidden during printing) -->
+        <div class="bill-actions">
+            <button id="print-bill-btn" class="btn"><i class="fa-solid fa-print"></i> Print Bill / Receipt</button>
+            <a href="{{ url_for('profile') }}" class="btn btn-secondary"><i class="fa-solid fa-clock-rotate-left"></i> View Order History</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary"><i class="fa-solid fa-house"></i> Back to Home</a>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

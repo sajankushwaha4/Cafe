@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="menu-layout">
+        
+        <!-- Menu Categories and Grid -->
+        <div class="menu-sections">
+            <div class="section-title" style="margin-bottom: 2rem; text-align: left;">
+                <h2>Our Delicious Menu</h2>
+                <p style="color: var(--gray);">Crafted from premium ingredients, fresh every day.</p>
+            </div>
+            
+            <!-- Category Filter Buttons -->
+            <div class="category-nav">
+                <button class="category-btn active" data-category="all">All Items</button>
+                <button class="category-btn" data-category="Hot Drinks">Hot Drinks</button>
+                <button class="category-btn" data-category="Cold Drinks">Cold Drinks</button>
+                <button class="category-btn" data-category="Snacks">Snacks</button>
+                <button class="category-btn" data-category="Pizza">Pizza</button>
+                <button class="category-btn" data-category="Burger">Burger</button>
+                <button class="category-btn" data-category="Desserts">Desserts</button>
+            </div>
+            
+            <!-- Menu Sections -->
+            {% for category, items in items_by_category.items() %}
+                <div class="category-section" id="cat-{{ category|replace(' ', '-') }}">
+                    <h3>{{ category }}</h3>
+                    
+                    <div class="items-grid">
+                        {% if items %}
+                            {% for item in items %}
+                                <div class="menu-card" data-category="{{ item.category }}">
+                                    {% if item.image_url %}
+                                        <img src="{{ item.image_url }}" class="menu-img" alt="{{ item.name }}">
+                                    {% else %}
+                                        <div class="menu-img" style="display: flex; align-items: center; justify-content: center; font-size: 3rem;">☕</div>
+                                    {% endif %}
+                                    
+                                    <div class="menu-info">
+                                        <h4>{{ item.name }}</h4>
+                                        <p class="menu-desc">{{ item.description }}</p>
+                                        
+                                        <div class="menu-price-action">
+                                            <span class="menu-price">INR {{ "%.2f"|format(item.price) }}</span>
+                                            <button class="add-to-cart-btn" 
+                                                    data-id="{{ item.id }}" 
+                                                    data-name="{{ item.name }}" 
+                                                    data-price="{{ item.price }}"
+                                                    title="Add to Cart">
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p style="color: var(--gray); font-style: italic;">No items available in this category.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Sticky Shopping Cart Sidebar Panel -->
+        <div class="cart-panel">
+            <h3>
+                <span><i class="fa-solid fa-cart-shopping" style="color: var(--accent);"></i> Shopping Cart</span>
+                <span class="cart-count-badge">0</span>
+            </h3>
+            
+            <!-- List of items inside cart (populated dynamically by main.js) -->
+            <div class="cart-items-container" id="cart-items">
+                <!-- Cart items will be loaded by Javascript -->
+            </div>
+            
+            <!-- Cart Totals & Checkout -->
+            <div class="cart-totals">
+                <div class="cart-total-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">INR 0.00</span>
+                </div>
+                <div class="cart-total-row">
+                    <span>GST (5%)</span>
+                    <span id="cart-gst">INR 0.00</span>
+                </div>
+                <div class="cart-total-row grand">
+                    <span>Grand Total</span>
+                    <span id="cart-total">INR 0.00</span>
+                </div>
+                
+                <!-- Quick Checkout Details -->
+                <form id="mini-checkout-form" class="checkout-form-mini">
+                    {% if logged_in %}
+                        <div class="form-group" style="margin-bottom: 0.8rem;">
+                            <input type="text" id="cust-name" placeholder="Your Name" value="{{ username }}" required style="padding: 0.5rem 0.8rem; font-size: 0.85rem;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0.8rem;">
+                            <input type="tel" id="cust-phone" placeholder="Contact Phone Number" required style="padding: 0.5rem 0.8rem; font-size: 0.85rem;">
+                        </div>
+                        <button type="submit" id="checkout-btn" class="btn" style="width: 100%;" disabled>
+                            <i class="fa-solid fa-qrcode"></i> Proceed to Checkout
+                        </button>
+                    {% else %}
+                        <div style="text-align: center; margin-top: 1rem; padding: 0.5rem; background-color: var(--cream-dark); border-radius: 6px;">
+                            <p style="font-size: 0.8rem; color: var(--primary); font-weight: 500; margin-bottom: 0.5rem;">Please Login to order food.</p>
+                            <a href="{{ url_for('login') }}" class="btn btn-sm" style="width: 100%; font-size: 0.85rem; padding: 0.5rem 1rem;"><i class="fa-solid fa-right-to-bracket"></i> Login to Order</a>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    // Client-side category filtering
+    document.addEventListener('DOMContentLoaded', () => {
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const sections = document.querySelectorAll('.category-section');
+        
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.dataset.category;
+                
+                // Toggle active class on button
+                categoryButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Filter sections
+                sections.forEach(sec => {
+                    const secId = sec.id.replace('cat-', '');
+                    
+                    if (category === 'all') {
+                        sec.style.display = 'block';
+                    } else if (secId === category.replace(' ', '-')) {
+                        sec.style.display = 'block';
+                    } else {
+                        sec.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
